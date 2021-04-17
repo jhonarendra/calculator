@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+	<!-- <link rel="manifest" href="<%= BASE_URL %>manifest.json" /> -->
+	<!-- <link rel="icon" href="<%= BASE_URL %>favicon.ico" type="image/x-icon" /> -->
+	<!-- <link rel="apple-touch-icon" href="<%= BASE_URL %>apple-touch-icon.png" /> -->
+	<!-- <link rel="apple-touch-icon" sizes="57x57" href="<%= BASE_URL %>apple-touch-icon-57x57.png" />
+	<link rel="apple-touch-icon" sizes="72x72" href="<%= BASE_URL %>apple-touch-icon-72x72.png" />
+	<link rel="apple-touch-icon" sizes="76x76" href="<%= BASE_URL %>apple-touch-icon-76x76.png" />
+	<link rel="apple-touch-icon" sizes="114x114" href="<%= BASE_URL %>apple-touch-icon-114x114.png" />
+	<link rel="apple-touch-icon" sizes="120x120" href="<%= BASE_URL %>apple-touch-icon-120x120.png" />
+	<link rel="apple-touch-icon" sizes="144x144" href="<%= BASE_URL %>apple-touch-icon-144x144.png" />
+	<link rel="apple-touch-icon" sizes="152x152" href="<%= BASE_URL %>apple-touch-icon-152x152.png" />
+	<link rel="apple-touch-icon" sizes="180x180" href="<%= BASE_URL %>apple-touch-icon-180x180.png" /> -->
+	<title>JoCalc</title>
+	<meta content="Calculator" name="description">
+	<meta content="Calculator" name="keywords">
+	<meta content="index, follow" name="robots">
+	<meta content="Indonesia" name="geo.placename">
+	<meta content="Putu Jhonarendra" name="Author">
+	<style type="text/css">
+		* {
+			margin: 0;
+			padding: 0;
+		}
+		body {
+			font-family: Arial, sans-serif;
+			max-width: 768px;
+			margin:0 auto;
+		}
+		svg {
+			width: 24px;
+			height: 24px;
+		}
+		svg path{
+			fill: #444;
+		}
+		body.dark svg path{
+			fill: white;
+		}
+
+		.d-flex {
+			display: flex
+		}
+		.bg-gold {
+			background: rgb(249, 130, 108)!important;
+		}
+		svg.svg-gold path{
+			fill: rgb(249, 130, 108)!important;
+		}
+		header {
+			position: fixed;
+			z-index: 999;
+			height: 60px;
+			width: 768px;
+		}
+		header h1 {
+			font-size: 1rem;
+			padding:10px;
+		}
+		.result-area {
+			position: relative;
+			width: 100%;
+			height: 40vh;
+			text-align: right;
+			overflow: hidden;
+		}
+		.detail {
+			padding:100px 10px 0 10px;
+		}
+		.result {
+			padding:20px 10px 0 10px;
+			font-size: 4rem;
+			font-weight: bold;
+		}
+		button {
+			border:0;
+		}
+		button:active {
+			border:0;
+		}
+		button:focus {
+			outline: none;
+		}
+		.btn-operation button {
+			flex: 25%;
+			height: 12vh;
+			font-size: 1.5rem;
+			font-weight: bold;
+			background: #ddd;
+			border:1px solid white;
+			color: black;
+		}
+		.btn-operation button:active {
+			background: rgb(0,0,0, .1);
+		}
+
+		.btn-operation button.col-3 {
+			flex: 25%;
+		}
+		.btn-operation button.col-6 {
+			flex: 50%;
+		}
+		body.dark {
+			background:rgb(13, 17, 23);
+			color: white;
+		}
+		body.dark .btn-operation button {
+			background: rgb(22, 27, 34);
+			border:1px solid rgb(13, 17, 23);
+			color: white;
+		}
+		body.dark .btn-operation button:active {
+			background: rgba(255,255,255, .1);
+			color: white;
+		}
+		body.dark .btn-operation button.bg-gold:active {
+			background: rgba(249, 130, 108, .9)!important;
+			color: white;
+		}
+		@media (max-width: 768px){
+			header {
+				width: 100%;
+			}
+		}
+	</style>
+</head>
+<body class="dark">
+	<!-- nama app, tombol dark mode -->
+	<header>
+		<div class="d-flex">
+			<div>
+				<h1>Calculator</h1>
+			</div>
+			<div id="dark-mode-toggle" style="margin-left:auto;padding:10px">
+				
+			</div>
+		</div>
+	</header>
+	<main>
+		<!-- angka hasil -->
+		<div class="result-area">
+			<div class="detail">
+				<span id="operation">0</span>
+			</div>
+			<div class="result">
+				<span id="result">0</span>
+			</div>
+		</div>
+		<!-- tombol angka -->
+		<div class="btn-operation">
+			<div class="d-flex">
+				<button class="all-clear col-6">AC</button>
+				<button class="percentage">%</button>
+				<button class="operator bg-gold" value="/">&divide;</button>
+			</div>
+			<div class="d-flex">
+				<button class="number" value="7">7</button>
+				<button class="number" value="8">8</button>
+				<button class="number" value="9">9</button>
+				<button class="operator bg-gold" value="x">&times;</button>
+			</div>
+			<div class="d-flex">
+				<button class="number" value="4">4</button>
+				<button class="number" value="5">5</button>
+				<button class="number" value="6">6</button>
+				<button class="operator bg-gold" value="-">-</button>
+			</div>
+			<div class="d-flex">
+				<button class="number" value="1">1</button>
+				<button class="number" value="2">2</button>
+				<button class="number" value="3">3</button>
+				<button class="operator bg-gold" value="+">+</button>
+			</div>
+			<div class="d-flex">
+				<button class="number col-6" value="0">0</button>
+				<button class="decimal" value=".">.</button>
+				<button class="equal-sign operator bg-gold">=</button>
+			</div>
+		</div>
+	</main>
+	<script type="text/javascript">
+
+		const main = () => {
+			const data = {
+				result: '',
+				operation: '',
+				isOperating: false,
+				isEqual: false,
+				isDark: true
+			}
+
+			const el = {
+				body: document.querySelector("body"),
+				operation: document.querySelector("#operation"),
+				result: document.querySelector("#result"),
+				number: document.querySelectorAll(".number"),
+				allClear: document.querySelector(".all-clear"),
+				operator: document.querySelectorAll(".operator"),
+				decimal: document.querySelector(".decimal"),
+				percent: document.querySelector(".percentage"),
+				equalSign: document.querySelector(".equal-sign"),
+				darkModeToggle: document.querySelector("#dark-mode-toggle")
+			}
+
+			const event = () => {
+				el.number.forEach(e => {
+					e.addEventListener('click', evt => {
+						if(data.isEqual){ // jika =, kemudian user tekan angka
+							method.reset()
+							data.isEqual = false
+						} else {
+							if(data.isOperating){
+								data.result = evt.target.value
+							} else {
+								data.result += evt.target.value
+							}
+							data.isOperating = false
+							data.operation += evt.target.value
+							method.updateView()
+						}
+					})
+				})
+
+				el.allClear.addEventListener('click', () => {
+					data.isEqual = false
+					data.isOperating = false
+					method.reset()
+				})
+
+				el.decimal.addEventListener('click', () => {
+					if(data.result.indexOf('.') > -1){
+						return false
+					}
+
+					data.result += `.`
+					data.operation += `.`
+					method.updateView()
+					
+				})
+
+				el.operator.forEach(e => {
+					e.addEventListener('click', evt => {
+						if(data.isEqual){ // jika =, kemudian user tekan operator
+							data.operation = `${data.result} ${evt.target.value} `
+							data.isEqual = false
+							method.updateView()
+						}
+						if(!data.isOperating){ // supaya tidak bisa klik operator beruntun
+							data.isOperating = true
+							data.operation += ` ${evt.target.value} `
+							method.updateView()
+						}
+					})
+				})
+
+				el.percent.addEventListener('click', () => {
+					data.result = data.result / 100
+					data.operation = data.result
+					method.updateView()
+				})
+
+				el.equalSign.addEventListener('click', evt => {
+					method.calculate()
+				})
+			}
+
+
+			const method = {
+				reset: () => {
+					data.result = ''
+					data.operation = ''
+					method.updateView()
+				},
+				updateView: () => {
+					el.result.innerHTML = data.result
+					el.operation.innerHTML = data.operation
+
+					if(data.result === ''){
+						el.result.innerHTML = '0'
+					}
+					if(data.operation === ''){
+						el.operation.innerHTML = '0'
+					}
+				},
+				calculate: () => {
+					let opr = data.operation.split(' ') // contoh ["9", "x", "6", "-", "8", "-", "3"]
+					let tmpOpr = []
+					opr.forEach(e => { // cleaning, karena ada "", "", ""
+						if(e !== ''){
+							tmpOpr.push(e)
+						}
+					})
+					opr = tmpOpr
+					if(opr.length > 2){ // supaya setidaknya ada 2 angka yg dikalkulasi
+						opr.forEach((e, i) => {
+							if(e > 0 || e < 0){ // number
+								if(i === 0){ // first
+									data.result = e
+								} else {
+									method.count(opr[i-1], e) // count(operator, num), counting result
+								}
+							}
+						})
+
+						data.operation += ` = `
+						method.updateView()
+					}
+					data.isEqual = true
+				},
+				count: (opr, num) => {
+					switch(opr){
+						case '/':
+							data.result /= num
+							break
+
+						case 'x':
+							data.result *= num
+							break
+
+						case '-':
+							data.result -= num
+							break
+
+						case '+':
+							if(num.indexOf('.') > -1){ // jika decimal
+								data.result = parseFloat(num) + parseFloat(data.result)
+							} else {
+								data.result = parseInt(num) + parseInt(data.result)
+							}
+							break
+						
+						default:
+							break
+					}
+				},
+				renderDarkMode: () => {
+					let dmhtml = `
+						<svg id="vendor-prefix-toggle-switch" class="btn-dark-mode svg-gold" viewBox="0 0 24 24"><title>toggle-switch</title><path d="M17,7A5,5 0 0,1 22,12A5,5 0 0,1 17,17A5,5 0 0,1 12,12A5,5 0 0,1 17,7M4,14A2,2 0 0,1 2,12A2,2 0 0,1 4,10H10V14H4Z"></path></svg>
+					`
+					if(!data.isDark){
+						dmhtml = `
+							<svg id="vendor-prefix-toggle-switch-off" viewBox="0 0 24 24" class="btn-dark-mode"><title>toggle-switch-off</title><path d="M7,7A5,5 0 0,1 12,12A5,5 0 0,1 7,17A5,5 0 0,1 2,12A5,5 0 0,1 7,7M20,14H14V10H20A2,2 0 0,1 22,12A2,2 0 0,1 20,14M7,9A3,3 0 0,0 4,12A3,3 0 0,0 7,15A3,3 0 0,0 10,12A3,3 0 0,0 7,9Z"></path></svg>
+						`
+					}
+					el.darkModeToggle.innerHTML = dmhtml
+
+					btnDarkMode = document.querySelector(".btn-dark-mode")
+					btnDarkMode.addEventListener('click', () => {
+						method.toggleDarkMode()
+					})
+				},
+				toggleDarkMode: () => {
+					if(data.isDark){
+						data.isDark = false
+						el.body.classList.remove('dark')
+					} else {
+						el.body.classList.add('dark')
+						data.isDark = true
+					}
+					method.renderDarkMode()
+				}
+			}
+
+			const mounted = () => {
+				method.reset()
+				method.renderDarkMode()
+				
+			}
+
+			mounted()
+			event()
+		}
+
+
+
+		document.addEventListener("DOMContentLoaded", main)
+	</script>
+</body>
+</html>
